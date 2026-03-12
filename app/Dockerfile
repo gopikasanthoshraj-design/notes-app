@@ -12,11 +12,12 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Make port 5000 available to the world outside this container
 EXPOSE 5000
+EXPOSE 8080
 
 # Define environment variable for Flask
 ENV FLASK_APP=app.py
 ENV FLASK_RUN_HOST=0.0.0.0
-ENV GOOGLE_APPLICATION_CREDENTIALS=/app/serviceAccountKey.json
+ENV FLASK_RUN_PORT=8080
 
 # Run app.py when the container launches
-CMD ["flask", "run"]
+CMD ["python", "app.py"]
