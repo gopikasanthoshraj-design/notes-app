@@ -1,0 +1,28 @@
+steps:
+  # Step 1: Build Docker image
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'Build Docker Image'
+    args:
+      - build
+      - -t
+      - us-central1-docker.pkg.dev/$PROJECT_ID/my-docker-repo/my-app:$COMMIT_SHA
+      - ./app
+
+  # Step 2: Push Docker image
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'Push Docker Image'
+    args:
+      - push
+      - us-central1-docker.pkg.dev/$PROJECT_ID/my-docker-repo/my-app:$COMMIT_SHA
+
+  # Step 3: Apply Cloud Deploy configs
+  - name: 'google/cloud-sdk:latest'
+    entrypoint: sh
+    args:
+      - -xe
+      - -c
+      - |
+       gcloud deploy apply --file deploy/clouddeploy.yaml --region=us-central1 --project=$PROJECT_ID
+       gcloud deploy releases create 'app-release-${SHORT_SHA}' --delivery-pipeline=my-run-demo-app-1 --region=us-central1 --project=$PROJECT_ID --images=image=us-central1-docker.pkg.dev/$PROJECT_ID/my-docker-repo/my-app:$COMMIT_SHA --skaffold-file=deploy/skaffold.yaml
+options:
+  logging: CLOUD_LOGGING_ONLY
