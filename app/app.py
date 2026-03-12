@@ -3,6 +3,9 @@ from firebase_admin import credentials, firestore
 from flask import Flask, render_template, request, redirect, url_for, flash
 import os
 
+# Absolute path to your service account JSON
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "/home/labuser/Downloads/trainocat-1772526789815-b7751259293a.json"
+
 # Application version
 APP_VERSION = "2.0.0"
 
@@ -127,6 +130,12 @@ def delete_note(note_id):
         flash("Firestore is not initialized. Cannot delete note.", "error")
     return redirect(url_for('index'))
 
-if __name__ == '__main__':
-    # Flask development server (not recommended for production)
-    app.run(debug=FLASK_DEBUG, host='0.0.0.0', port=int(os.environ.get('PORT', 8080)))
+if __name__ == "__main__":
+    # Get debug mode from environment variable (optional)
+    FLASK_DEBUG = os.environ.get("FLASK_DEBUG", "False").lower() == "true"
+    
+    # Use PORT from environment variable (Cloud Run / App Engine sets this)
+    port = int(os.environ.get("PORT", 8080))
+    
+    # Start Flask development server
+    app.run(host="0.0.0.0", port=port, debug=FLASK_DEBUG)
