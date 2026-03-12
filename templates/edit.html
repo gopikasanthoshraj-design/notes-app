@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Note - Gemini Notes App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Edit Note</h1>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <ul class="flashes">
+                    {% for category, message in messages %}
+                        <li class="{{ category }}">{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+
+        {% if note %}
+            <form action="{{ url_for('update_note', note_id=note.id) }}" method="post">
+                <input type="text" name="title" value="{{ note.title }}" placeholder="Note Title" required>
+                <textarea name="content" placeholder="Note Content" rows="10" required>{{ note.content }}</textarea>
+                <button type="submit">Update Note</button>
+                <a href="{{ url_for('index') }}" class="button cancel-button">Cancel</a>
+            </form>
+        {% else %}
+            <p>Note not found or Firestore not initialized.</p>
+            <a href="{{ url_for('index') }}" class="button">Back to Notes</a>
+        {% endif %}
+    </div>
+    <footer>
+        <p>Version: {{ app_version }}</p>
+    </footer>
+</body>
+</html>
