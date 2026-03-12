@@ -4,7 +4,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 import os
 
 # Application version
-APP_VERSION = "1.0.0"
+APP_VERSION = "2.0.0"
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24) # Secret key for flashing messages
